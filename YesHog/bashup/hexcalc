@@ -1,0 +1,158 @@
+#!/bin/bash
+
+TMP_BC=/tmp/funcs.bc
+BC="bc -l $TMP_BC"
+export BC_LINE_LENGTH=0
+
+function cleanup()
+{
+  rm -f $TMP_BC
+}
+
+cat <<EOF >$TMP_BC
+ibase=16
+define int(x)   { auto os; os=scale; scale=0; x/=1; scale=os; return(x) }
+define floor(x) { auto xx; xx=int(x); if(xx>x)xx-=1; return(xx) }
+define ceil(x) { auto xx; xx=int(x); if ( (x-xx) > 0 ) xx+=1; return xx }
+define mod(x,y)
+{
+    if (y == 0) {
+        return x
+    } else {
+        r = x - y * floor(x / y)
+        if( r < 0 ) {
+            return (y + r)
+        } else {
+            return r
+        }
+    }
+}
+define even(n) { if (mod(n,2)==0) return 1 else return 0 }
+define modinv(a,p)
+{
+    scale=0
+    neg=0
+    if( a < 0 ) {
+        a = a*-1
+        neg = 1
+    }
+    r = 0
+    u = a; v = p
+    x1 = 1; x2 = 0
+
+    while(u != 1 && v != 1)
+    {
+        while( u%2 == 0 )
+        {
+            u = u/2
+            if( x1%2 == 0 ) {
+                x1=x1/2
+            } else {                                               
+                x1=(x1+p)/2
+            }                                                                 
+        }
+        while( v%2 == 0 )
+        {
+           v = v/2
+           if( x2%2 == 0 ) {
+               x2 = x2/2
+           } else {
+               x2 = (x2+p)/2
+           }
+        }
+        if( u >= v ) {
+            u = u-v
+            x1 = x1 - x2
+        } else {
+            v = v-u
+            x2 = x2 - x1
+        }
+    }
+    if( u == 1 ) {
+        r = x1
+    } else {
+        r = x2
+    }
+    if( neg > 0 ) {
+        if( r < 0 ) {
+            r = r + p
+        } else {
+            r = p - r
+        }
+    }
+    if( r < 0 ) {
+        r = r + p
+    }
+    return r
+}
+define ec_pt_dbl_get_s( a, x, y, p )
+{
+   s = mod( ((3*x*x) + a) * modinv( 2*y,p ), p )
+   return s
+}
+define ec_pt_add_get_s( x, y, x1, y1, p )
+{
+   s = mod( (y - y1)*modinv( (x - x1), p ), p )
+   return s
+}
+define ec_pt_add_x( x, y, x1, y1, p )
+{
+    s_sq = (ec_pt_add_get_s( x, y, x1, y1, p ))^2
+    return mod((s_sq - x - x1), p)
+}
+define ec_pt_add_y( x, y, x1, y1, p )
+{
+    s = ec_pt_add_get_s( x, y, x1, y1, p )
+    xr = ec_pt_add_x( x, y, x1, y1, p )
+    y = mod( (-1*y + s*(x-xr)), p )
+    return y
+}
+define ec_pt_dbl_x( a, x, y, p )
+{
+    s_sq = (ec_pt_dbl_get_s( a, x, y, p ))^2
+    return mod((s_sq - 2*x), p)
+}
+define ec_pt_dbl_y( a, x, y, p )
+{
+    s = ec_pt_dbl_get_s( a, x, y, p )
+    xr = ec_pt_dbl_x( a, x, y, p )
+    y = mod( (-1*y + s*(x-xr)), p )
+    return y
+}
+define ec_scalar_mul(k, ktop, a, xx, yy, p)
+{
+    scale=0
+    obase=16
+    j = 0
+    m = k
+    x = xx
+    y = yy
+    i = 0
+    for( j = ktop-2; j>=0; j-- ) {
+        e = (m/(2^j))
+        /* print "m=", m,", 2^j=", 2^j,", k/(2^j)=", e, "\n" */
+        xq = x
+        x =  ec_pt_dbl_x( a, x, y, p )
+        y =  ec_pt_dbl_y( a, xq, y, p )
+        print "\nIteration ", i, " bit ", j, "\nDBL x [", x, "] y [",  y, "] xx [", xx, "] yy [", yy, "]\n"
+        if(  even(e) ) {
+            /* print 0 */
+        } else {
+            /* print 1 */
+            xp = x
+            x =  ec_pt_add_x( x, y, xx, yy, p )
+            y =  ec_pt_add_y( xp, y, xx, yy, p )
+            print "ADD x [", x, "] y [",  y, "] xx [", xx, "] yy [", yy, "]\n"
+        }
+        i = i + 1
+    }
+    return x
+}
+EOF
+
+args=$(echo $*) #|tr '[a-f]' '[A-F]'|sed -e 's/D(/d(/g' -e 's/Dinv(/dinv(/g')
+exp=$(echo $args|cut -f 1 -d " ")
+res=$(echo $exp|$BC)
+hexres=$(echo "obase=16;$res"|bc -l)
+echo $hexres
+cleanup

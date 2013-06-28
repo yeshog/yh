@@ -1,0 +1,2 @@
+[ "x$1" == "" ] && echo "$0 <big number>" && exit 1
+echo $1|sed 's/../0x&, /g'|fold -w48|sed 's/^.*/                &/g'

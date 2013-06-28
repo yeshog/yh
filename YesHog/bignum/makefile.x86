@@ -1,0 +1,23 @@
+include $(shell pwd)/../common/user.mak
+LDFLAGS=
+SRCS=bufops.c mul.c div.c modinv.c modexp.c sqr.c
+TEST=test.c
+OBJS=$(SRCS:.c=.o)
+PROJ=libbignum.a
+INCLUDES=-I$(shell pwd)/../common
+CFLAGS+=-DMONT_FIOS
+
+all: $(SRCS) $(PROJ) test
+
+test: $(PROJ)
+	$(CC) $(LDFLAGS) $(INCLUDES) $(CFLAGS) -o $@ $(TEST) $(PROJ)
+	$(CC) $(CFLAGS) -o modexp_test_x86 modexp_test_x86.c -lcrypto
+    
+$(PROJ): $(OBJS)
+	$(AR) $(ARFLAGS) $@ $(OBJS)
+
+.c.o:
+	$(CC) $(CFLAGS) $(LDFLAGS) $(INCLUDES) $(OFLAGS) $< -o $@
+
+clean:
+	rm -rf *.o *.a test modexp_test_x86

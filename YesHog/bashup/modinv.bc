@@ -1,0 +1,66 @@
+define int(x)   { auto os; os=scale; scale=0; x/=1; scale=os; return(x) }
+define floor(x) { auto xx; xx=int(x); if(xx>x)xx-=1; return(xx) }
+define mod(x,y) { if (y == 0) return x else return x - y * floor(x / y) }
+define modinv(a,p)
+{
+    scale=0
+    #obase=16
+    u = a; v = p
+    x1 = 1; x2 = 0
+    i = 0
+    while(u != 1 && v != 1)
+    {
+        print "\n", i, "] u = ", u, ", v = ", v, ", x1 = ", x1, ", x2 = ", x2, "\n"
+        while( u%2 == 0 )
+        {
+            print "\tu is even u/2 = "
+            u = u/2
+            print u, "\n"
+            if( x1%2 == 0 ) {
+                print "\t\tx1 is even x1/2 = "
+                x1=x1/2
+                print x1, "\n"
+            } else {
+                print "\t\tx1 is odd x1 = "                                               
+                x1=(x1+p)/2
+                print x1, "\n"
+            }                                                                 
+        }
+        while( v%2 == 0 )
+        {
+           print "\tv is even v/2 = "
+           v = v/2
+           print v, "\n"
+           if( x2%2 == 0 ) {
+               print "\t\tx2 is even x2/2 = "
+               x2 = x2/2
+               print x2, "\n"
+           } else {
+               print "\t\tx2 is odd x2 = "
+               x2 = (x2+p)/2
+               print x2, "\n"
+           }
+        }
+        if( u >= v ) {
+            print "u > v, u-v = "
+            u = u-v
+            print u, ", x1 = x1-x2 = "
+            x1 = x1 - x2
+            print x1, "\n"
+        } else {
+            print "v > u, v-u = "
+            v = v-u
+            print v, ", x2 = x2-x1 = "
+            x2 = x2 - x1
+            print x2, "\n"
+        }
+        i = i + 1
+    }
+    if( u == 1 ) {
+        print "result, x1 = ", x1, "\n"
+        return x1
+    } else {
+        print "result, x2 = ", x2, "\n"
+        return x2
+    }
+}

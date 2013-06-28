@@ -1,0 +1,56 @@
+A typical modinv operation goes as follows
+=================
+modinv(23,53)
+                                                                                                                                                              
+0] u = 23, v = 53, x1 = 1, x2 = 0                                                                                                                             
+v > u, v-u = 30, x2 = x2-x1 = -1                                                                                                                              
+                                                                                                                                                              
+1] u = 23, v = 30, x1 = 1, x2 = -1                                                                                                                            
+        v is even v/2 = 15                                                                                                                                    
+                x2 is odd x2 = 26                                                                                                                             
+u > v, u-v = 8, x1 = x1-x2 = -25                                                                                                                              
+                                                                                                                                                              
+2] u = 8, v = 15, x1 = -25, x2 = 26
+        u is even u/2 = 4
+                x1 is odd x1 = 14
+        u is even u/2 = 2
+                x1 is even x1/2 = 7
+        u is even u/2 = 1
+                x1 is odd x1 = 30
+v > u, v-u = 14, x2 = x2-x1 = -4
+result, x1 = 30
+==================
+
+Here we see how we can optimize the shifts and adds if they are more than 1
+Suppose we are at step 2 above :
+2] u = 8, v = 15, x1 = -25, x2 = 26
+
+u = 00001000b, ctz = 3
+X1 = 00011001
+The operations on X1 are:
+1. (-25 + 53)/2 = 14
+2. 14/2         = 7
+3. (7 + 53)/2   = 30
+
+The three operations above can be re-written as
+
+1. -25 + (53 * 2^0)
+   ---------------   = 14
+          2
+
+2. 14/2 = 25 + (53 * 2^0)       -25 + (53 * 2^0)
+          ---------------  =    ---------------   = 7
+                2                     4
+              ------
+                2 
+
+3. (7 + 53)/2        -25 + (53 * 2^0)        53           (-25 + 53 *2^0) + (53 * 2^2)
+                      --------------    +                 ----------------------------
+                            4                                           4
+                       -----------------------                    -------------
+                                  2                                     2
+
+     240
+   = ---    = 30
+      8
+

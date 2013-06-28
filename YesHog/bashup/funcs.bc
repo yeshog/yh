@@ -1,0 +1,228 @@
+define int(x)   { auto os; os=scale; scale=0; x/=1; scale=os; return(x) }
+define floor(x) { auto xx; xx=int(x); if(xx>x)xx-=1; return(xx) }
+define ceil(x) { auto xx; xx=int(x); if ( (x-xx) > 0 ) xx+=1; return xx }
+define mod(x,y) { if (y == 0) return x else return x - y * floor(x / y) }
+define f1(x,y) { return x^2-(floor(y/x)+x)*x+y }
+define f2(x,y) { return x^2-(ceil(y/x)+x)*x+y }
+define f1e(x,y){ return y - (floor(y/x)*x) }
+define f2e(x,y) { return y - (ceil(y/x)*x) }
+define ff(x) { return  f1(floor(sqrt(x)), x) }
+define fc(x) { return f2(ceil(sqrt(x)), x) }
+define fsq(m,x) { return (x+ceil(m/x))^2-2*m }
+define fsqa(m,x) { return x^2+ceil(m/x)^2 }
+define fsqdiff(m,x) { return fsq(m,x)-fsqa(m,x) }
+define fmd(s,m) { return sqrt((s^2-(2*m))/2) }
+define fd(s,m) { return s/ceil(fmd(s,m)) }
+define qp(x,a,b,c) { return a*x*x-b*x+c }
+define sf(x,m,o) { return x^2-(x+floor(m/x)+o)*x+m }
+define avg(x,y) { return (x+y)/2 }
+define diff(x,y)  { return x-y }
+define floor(x) { auto xx; xx=int(x); if(xx>x)xx-=1; return(xx) }
+define rt(a,b,c) { return (-1*b-sqrt(b^2-4*a*c))/2*a }
+define sq(x,y) { auto bb,cc,dd; bb=floor(rt(1,-x,y)); cc=x-bb; dd=((x^2-(bb^2+cc^2))/2)-y; return dd }
+define sq1(x,y) { auto bb,cc,dd; bb=ceil(rt(1,-x,y)); cc=x-bb; dd=((x^2-(bb^2+cc^2))/2)-y; return dd }
+define sqr(x,y) { auto bb,cc,dd; bb=(rt(1,-x,y)); cc=x-bb; dd=((x^2-(bb^2+cc^2))/2)-y; return dd }
+define even(n) { if (mod(n,2)==0) return 1 else return 0 }
+define div_5(n) { if (mod(n,5)==0) return 1 else return 0 }
+define sqms(s,m) { auto a,b; a=floor(rt(1, -1*s, m)); b=s-a; return sqrt(a^2+b^2+2*m)-s }
+define sqm(s,m) { return s*s-2*m }
+define ssqm(s,m) { return sqrt(sqm(s,m)) }
+define sqmb(s,m,b) { return s*s-2*m-b*b }
+define ssqmb(s,m,b) { return sqrt(sqmb(s,m,b)) }
+define lssqmb(s,m,b) { return l(ssqmb(s,m,b)) }
+define nm12(n) { return floor(n-1)/2 }
+define afromn(n) { return floor(sqrt(nm12(n))) }
+define rfromn(n) { return nm12(n)-(afromn(n))^2 }
+define an(a,n) { return (a+n)*(a-n) }
+define rn(r,n) { return (2*r+1)+2*n*n }
+define smn(m,s,n) { return s^2-(((s-n)*(s-n))+2*m+n^2) }
+/*
+define modinv(a,p)
+{
+    scale=0
+    u = a; v = p
+    x1 = 1; x2 = 0
+    while(u != 1 && v != 1)
+    {
+        print "u = ", u, ", v = ", v, ", x1 = ", x1, ", x2 = ", x2, "\n"
+        while( u%2 == 0 )
+        {
+            print "\tu is even u/2 = "
+            u = u/2
+            print u, "\n"
+            if( x1%2 == 0 ) {
+                print "\t\tx1 is even x1/2 = "
+                x1=x1/2
+                print x1, "\n"
+            } else {
+                print "\t\tx1 is odd x1 = "                                               
+                x1=(x1+p)/2
+                print x1, "\n"
+            }                                                                 
+        }
+        while( v%2 == 0 )
+        {
+           print "\tv is even v/2 = "
+           v = v/2
+           print u, "\n"
+           if( x2%2 == 0 ) {
+               print "\t\tx2 is even x2/2 = "
+               x2 = x2/2
+               print x2, "\n"
+           } else {
+               print "\t\tx2 is odd x2 = "
+               x2 = (x2+p)/2
+               print x2, "\n"
+           }
+        }
+        if( u >= v ) {
+            print "u > v, u-v = "
+            u = u-v
+            print u, ", x1 = x1-x2 = "
+            x1 = x1 - x2
+            print x1, "\n"
+        } else {
+            print "v > u, v-u = "
+            v = v-u
+            print v, ", x2 = x2-x1 = "
+            x2 = x2 - x1
+            print x2, "\n"
+        }
+    }
+    if( u == 1 ) {
+        print "result, x1 = ", x1, "\n"
+        return x1
+    } else {
+        print "result, x2 = ", x2, "\n"
+        return x2
+    }
+}
+*/
+
+define modinv(a,p)
+{
+    scale=0
+    neg=0
+    if( a < 0 ) {
+        a = a*-1
+        neg = 1
+    }
+    r = 0
+    u = a; v = p
+    x1 = 1; x2 = 0
+
+    while(u != 1 && v != 1)
+    {
+        while( u%2 == 0 )
+        {
+            u = u/2
+            if( x1%2 == 0 ) {
+                x1=x1/2
+            } else {                                               
+                x1=(x1+p)/2
+            }                                                                 
+        }
+        while( v%2 == 0 )
+        {
+           v = v/2
+           if( x2%2 == 0 ) {
+               x2 = x2/2
+           } else {
+               x2 = (x2+p)/2
+           }
+        }
+        if( u >= v ) {
+            u = u-v
+            x1 = x1 - x2
+        } else {
+            v = v-u
+            x2 = x2 - x1
+        }
+    }
+    if( u == 1 ) {
+        r = x1
+    } else {
+        r = x2
+    }
+    if( neg > 0 ) {
+        if( r < 0 ) {
+            r = r * -1
+        } else {
+            r = p - r
+        }
+    }
+    if( r < 0 ) {
+        r = r + p
+    }
+    return r
+}
+
+define ec_pt_dbl_get_s( a, x, y, p )
+{
+   n = mod( ((3*x*x) + a), p )
+   d = mod(2*y, p )
+   /* print "((3*x*x) + a) = ", n, " 2*y = ", d, "\n"
+   print "modinv(", d, ",", p, ")", "\n" */
+   i = modinv( d,p )
+   /* print "modinv(", d, ",", p, ")", "=", i, "\n" */
+   s = mod( n*i, p )
+   return s
+}
+define ec_pt_add_get_s( x, y, x1, y1, p )
+{
+   s = mod( (y - y1)*modinv( (x - x1), p ), p )
+   return s
+}
+define ec_pt_add_x( x, y, x1, y1, p )
+{
+    s_sq = (ec_pt_add_get_s( x, y, x1, y1, p ))^2
+    return mod((s_sq - x - x1), p)
+}
+define ec_pt_add_y( x, y, x1, y1, p )
+{
+    s = ec_pt_add_get_s( x, y, x1, y1, p )
+    xr = ec_pt_add_x( x, y, x1, y1, p )
+    y = mod( (-1*y + s*(x-xr)), p )
+    return y
+}
+define ec_pt_dbl_x( a, x, y, p )
+{
+    s_sq = (ec_pt_dbl_get_s( a, x, y, p ))^2
+    return mod((s_sq - 2*x), p)
+}
+define ec_pt_dbl_y( a, x, y, p )
+{
+    s = ec_pt_dbl_get_s( a, x, y, p )
+    xr = ec_pt_dbl_x( a, x, y, p )
+    y = mod( (-1*y + s*(x-xr)), p )
+    return y
+}
+define ec_scalar_mul(k, ktop, a, xx, yy, p)
+{
+    scale=0
+    obase=16
+    j = 0
+    m = k
+    x = xx
+    y = yy
+    pp = 0
+    for( j = ktop-2; j>=0; j-- ) {
+        e = (m/(2^j))
+        /* print "m=", m,", 2^j=", 2^j,", k/(2^j)=", e, "\n"  xxx*/
+        xq = x
+        x =  ec_pt_dbl_x( a, x, y, p )
+        y =  ec_pt_dbl_y( a, xq, y, p )
+        print "\nIteration ", pp, " bit ", j, "\nDBL x [", x, "] y [",  y, "] xx [", xx, "] yy [", yy, "]\n"
+        if(  even(e) ) {
+            /* print 0 */
+        } else {
+            /* print 1 */
+            xp = x
+            x =  ec_pt_add_x( x, y, xx, yy, p )
+            y =  ec_pt_add_y( xp, y, xx, yy, p )
+            print "ADD x [", x, "] y [",  y, "] xx [", xx, "] yy [", yy, "]\n"
+        }
+        pp = pp + 1
+    }
+    return x
+}
