@@ -11,6 +11,13 @@ ifeq ($(TOOLCHAIN),x86)
  TSRCS = test.c
  LIBS += -lcrypto
  include $(TOPDIR)/config-x86.mak
-else
+endif
+ifeq ($(TOOLCHAIN),AVR)
  include $(TOPDIR)/config-AVR.mak
+endif
+ifeq ($(TOOLCHAIN),ARM)
+ SRCS += ec_verify.c
+ TSRCS = test.c
+ LIBS += -lcrypto
+ include $(TOPDIR)/config-ARM.mak
 endif

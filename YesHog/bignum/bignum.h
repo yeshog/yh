@@ -456,5 +456,10 @@ RESULT mod_barrett( Integer, Integer, Integers );
 void mod_barrett_free( Integer[3], BYTE );
 RESULT mod_barrett_reduce( Integer, Integer, Integer, Integer, Integer );
 RESULT div_quotient( Integer, Integer, Integer );
+BYTE byte_ctz_avr( BYTE );
+#ifdef _AVR_
+#undef byte_ctz
+#define byte_ctz byte_ctz_avr
+#endif
 /* TODO: Test only #ifdef */
 #endif

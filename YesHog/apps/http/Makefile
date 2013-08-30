@@ -4,6 +4,11 @@ LIBS = -lcommon
 ifeq ($(TOOLCHAIN),x86)
  TSRCS = test.c
  include $(TOPDIR)/config-x86.mak
-else
+endif
+ifeq ($(TOOLCHAIN),ARM)
+ TSRCS = test.c
+ include $(TOPDIR)/config-ARM.mak
+endif
+ifeq ($(TOOLCHAIN),AVR)
  include $(TOPDIR)/config-AVR.mak
 endif

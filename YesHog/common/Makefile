@@ -9,6 +9,13 @@ TARGET = libcommon.a
 ifeq ($(TOOLCHAIN),x86)
  SRCS += fileops.c
  include $(TOPDIR)/config-x86.mak
-else
+endif
+ 
+ifeq ($(TOOLCHAIN),AVR)
  include $(TOPDIR)/config-AVR.mak
+endif
+
+ifeq ($(TOOLCHAIN),ARM)
+ SRCS += fileops.c
+ include $(TOPDIR)/config-ARM.mak
 endif

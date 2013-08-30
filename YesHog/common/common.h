@@ -19,6 +19,8 @@
 #include <util/atomic.h>
 #include <util/delay.h>
 #define _NEWLINE_ "\r\n"
+#else
+#define _NEWLINE_ "\n"
 #endif
 
 #define BUF_128_BYTES   128
@@ -70,7 +72,7 @@ SWORD replace_str(   char*, SHORT,   char*,
 SHORT hexdump_(BYTE*, SHORT);
 SHORT hexdump( BYTE*, SHORT);
 
-#if defined(_X86_64_)
+#if defined(_X86_64_) || defined(_ARM_)
 /* fileops.c , no file management in AVR */
 BYTE* get_file_data(char*, SWORD*);
 #define _NEWLINE_ "\n"

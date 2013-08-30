@@ -8,10 +8,19 @@ ifeq ($(TOOLCHAIN),x86)
  TARGET = libasn.a
  LIBS = -lyhcrypto -lbignum -lcommon
  include $(TOPDIR)/config-x86.mak
-else
+endif
+
+ifeq ($(TOOLCHAIN),AVR)
  SRCS = asn.c avr_ecc.c $(TOPDIR)/crypto/ec_verify.c
  TARGET = avr_ecc.hex
  LIBS = $(TOPDIR)/crypto/ec.o $(TOPDIR)/crypto/sha1.o  -lbignum -lcommon -luart
  include $(TOPDIR)/config-AVR.mak
 endif
 
+ifeq ($(TOOLCHAIN),ARM)
+ TSRCS = test.c
+ SRCS = asn.c
+ TARGET = libasn.a
+ LIBS = -lyhcrypto -lbignum -lcommon
+ include $(TOPDIR)/config-ARM.mak
+endif

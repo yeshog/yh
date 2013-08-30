@@ -3,7 +3,7 @@
    Copyright: YesHog (www.yeshog.com)
 */
 
-#ifdef _X86_64_
+#if defined(_X86_64_) || defined(_ARM_)
 
 #include "common.h"
 #include <stdio.h>
